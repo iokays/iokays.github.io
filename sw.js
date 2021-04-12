@@ -36,28 +36,40 @@ self.addEventListener('install', e => {
   );
 });
 
-self.addEventListener('fetch', e => {
-  e.respondWith(
-    caches.match(e.request).then(r => {
-      /* console.log(`[sw] method: ${e.request.method}, fetching: ${e.request.url}`); */
-      return r || fetch(e.request).then(response => {
-        const url = e.request.url;
 
-        if (e.request.method !== 'GET'
-          || !verifyDomain(url)
-          || isExcluded(url)) {
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => {
+        /* console.log(`[sw] method: ${event.request.method}, fetching: ${event.request.url}`); */
+        if (response) {
           return response;
         }
 
-        return caches.open(cacheName).then(cache => {
-          /* console.log('[sw] Caching new resource: ' + e.request.url); */
-          cache.put(e.request, response.clone());
-          return response;
-        });
+        let fetchRequest = event.request.clone();
 
-      });
-    })
-  );
+        return fetch(fetchRequest)
+          .then(response => {
+            const url = fetchRequest.url;
+
+            if (fetchRequest.method !== 'GET' ||
+              !verifyDomain(url) ||
+              isExcluded(url)) {
+              return response;
+            }
+
+            let responseToCache = response.clone();
+
+            caches.open(cacheName)
+              .then(cache => {
+                /* console.log('[sw] Caching new resource: ' + event.request.url); */
+                cache.put(event.request, responseToCache);
+              });
+
+            return response;
+          });
+      })
+    );
 });
 
 self.addEventListener('activate', e => {
