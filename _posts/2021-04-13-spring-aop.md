@@ -7,6 +7,26 @@ tags: [Spring, Spring AOP, JDK动态代理, CGLIB, Aopalliance]
 pin: true
 ---
 
+## JDK 动态代理
+
+
+`
+
+public class JdkSample {
+
+    public static void main(String[] args) {
+
+        final InvocationHandler myInvocationHandler = (proxy, method, args2) -> {
+            return null;
+        };
+
+    }
+
+}
+
+`
+
+
 
 ## AOP的概念
 
@@ -23,7 +43,6 @@ pin: true
 1. 静态代理
 
 2. 动态代理
-
 
 ## AOP Alliance
 
@@ -42,9 +61,38 @@ Proxy Factory
 
 3. Spring AOP 通知
 
+前置通知: 通过异常,阻止方法的执行.
+
+后置通知: 可以读取数据, 但不能修改其返回值.可以抛出异常.
+
+环绕通知: 可以修改返回值, 组织方法执行.
+
+异常通知: 对程序流进行的唯一修改是更改抛出的异常类型.
+Spring 寻找的第一方法是一个或多个为afterThrowing的公共方法最匹配的一个, 返回的类型不重要, 建议是void.
+
+减少错误的范围, 选择合适的通知.
+
+
+###Spring AOP pointcut
+
+8
+2
+6
+
+
+
+Spring AOP
+
 
 
 interface advisor
+
+ProxyFactoryBean
+
+
+
+
+
 
 
 
