@@ -9,22 +9,32 @@ pin: true
 
 ## JDK 动态代理
 
-
-`
-
-public class JdkSample {
+```
+@ApiModel(description = "JDK动态代理实例")
+public class JdkProxySample {
 
     public static void main(String[] args) {
 
-        final InvocationHandler myInvocationHandler = (proxy, method, args2) -> {
-            return null;
-        };
+        final QuackBehavior quack = () -> System.out.println("呱呱叫");
 
+        final QuackInvocationHandler quackInvocationHandler = new QuackInvocationHandler(quack);
+
+        final QuackBehavior duck = (QuackBehavior) Proxy.newProxyInstance(
+                quack.getClass().getClassLoader(),
+                new Class[]{QuackBehavior.class},
+                quackInvocationHandler);
+
+        duck.quack();
     }
-
 }
+```
 
-`
+```
+@ApiModel("呱呱叫行为接口")
+public interface QuackBehavior {
+    void quack();
+}
+```
 
 
 

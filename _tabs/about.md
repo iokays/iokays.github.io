@@ -4,5 +4,12 @@ icon: fas fa-info
 order: 4
 ---
 
+兴趣, 爱好而已.
 
-> **Note**: Add Markdown syntax content to file `_tabs/about.md` and it will show up on this page.
+
+希望是美好的,也许是人间至善,而美好的事物永不消逝.
+
+
+
+
+
