@@ -7,12 +7,11 @@ tags: [Spring, Spring MVC]
 pin: true
 ---
 
-## Spring MVC
+深入浅出 Spring MVC 的工作原理.
 
 <https://github.com/iokays/Samples/tree/main/spring_web>
 
-从一个例子, 深入浅出 Spring MVC 的工作原理.
-
+## 一个例子
 
 ```java
 @RestController
@@ -38,10 +37,11 @@ public class SpringMvcSample {
 hello
 ```
 
+## HandlerMethod
+
 我们先不管SpringBoot 是怎么启动, 我们现在只关心方法是怎么调用的.
 
 SpringMvcSample::hello 这个方法在SpringMVC这中最终是以HandlerMethod存在. 我们再加一个功能, 可以验证HandlerMethod有哪些数据.
-
 
 ```java
 @Configuration
@@ -81,13 +81,18 @@ public class WebConfig implements WebMvcConfigurer {
 
 ![handler_method.png](/assets/img/spring_mvc/handler_method.png)
 
+我们发现, 这是用到装饰者模式.
+
 我们从HandlerMethod的UML类图可以看到, 我们看到 Bean, Method, Parameters 等一些参数, 其实我们就可以调用invoke实现方法的执行操作. 但在HandlerMethod没有这样做.
 只是对参数做了一些封装.
 
 方法的调用是在InvocableHandlerMethod::doInvoke():```return method.invoke(getBean(), args);```
 
+## HandlerMethodArgumentResolver
+
 当我们在调试InvocableHandlerMethod::getMethodArgumentValues方法的时候, 会发现 HandlerMethodArgumentResolverComposite 这个对象, 这个对象提供了所有的参数解析器.
 我们也简单的画出一些重要的UML类图.
+
 
 ![handler_method_argument_resolver.png](/assets/img/spring_mvc/handler_method_argument_resolver.png)
 
@@ -116,7 +121,19 @@ argumentResolvers保存的是各个基于HandlerMethodArgumentResolver的实现�
 我们先止步到此.
 
 
-上述我们描述了invoke时,method的参数是怎么封装的, 现在我们再回过来看看, 方法是怎么找到的.
+## HandlerExecutionChain
+
+上述我们描述了invoke时,method的参数是怎么封装的, 现在我们再回过来看看, 在调试的时候,会发现HandlerMethod是被HandlerExecutionChain这个类封装的, 类图如下.
+
+![handler_execution_chain.png](/assets/img/spring_mvc/handler_execution_chain.png)
+
+HandlerExecutionChain整合了Handler和Handler拦截器. 基于拦截器提供了在DispatchServlet::doDispatch方法中的前置, handler::invoke和后置等调用.
+
+## HandlerInterceptor
+
+
+
+## HandlerAdapter
 
 
 
